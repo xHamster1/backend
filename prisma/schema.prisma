@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now()) @map("createdAt")
+  updatedAt  DateTime  @updatedAt @map("updatedAt")
+  email      String    @unique
+  password   String
+  name       String    @unique
+  avatarPath String    @default("/uploads/default-avatar.png") @map("avatar_path")
+  phone      String    @default("")
+  orders     Order[]
+  favorites  Product[]
+}
+
+model Product {
+  id             Int              @id @default(autoincrement())
+  createdAt      DateTime         @default(now()) @map("createdAt")
+  updatedAt      DateTime         @updatedAt @map("updatedAt")
+  name           String           @unique
+  slug           String           @unique
+  description    String
+  price          Int
+  images         String[]
+  categoryId     Int?             @map("category_id")
+  subcategoryId  Int?             @map("subcategory_id")
+  userId         Int?             @map("user_id")
+  brandId        Int?             @map("brand_id")
+  orderItems     OrderItem[]
+  brand          Brand?           @relation(fields: [brandId], references: [id])
+  category       Category?        @relation(fields: [categoryId], references: [id])
+  subcategory    Subcategory?     @relation(fields: [subcategoryId], references: [id])
+  user           User?            @relation(fields: [userId], references: [id])
+  specifications Specifications[]
+}
+
+model Specifications {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("createdAt")
+  updatedAt DateTime @updatedAt @map("updatedAt")
+  name      String
+  slug      String
+  productId Int?
+  product   Product? @relation(fields: [productId], references: [id])
+  value     Value[]
+}
+
+model Value {
+  id               Int             @id @default(autoincrement())
+  createdAt        DateTime        @default(now()) @map("createdAt")
+  updatedAt        DateTime        @updatedAt @map("updatedAt")
+  articul          String
+  name             String
+  specificationsId Int?
+  Specifications   Specifications? @relation(fields: [specificationsId], references: [id])
+}
+
+model Category {
+  id          Int           @id @default(autoincrement())
+  createdAt   DateTime      @default(now()) @map("createdAt")
+  updatedAt   DateTime      @updatedAt @map("updatedAt")
+  name        String        @unique
+  slug        String        @unique
+  products    Product[]
+  subcategory Subcategory[]
+}
+
+model Subcategory {
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now()) @map("createdAt")
+  updatedAt  DateTime  @updatedAt @map("updatedAt")
+  name       String    @unique
+  slug       String    @unique
+  categoryId Int?      @map("category_id")
+  products   Product[]
+  category   Category? @relation(fields: [categoryId], references: [id])
+}
+
+model Brand {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now()) @map("createdAt")
+  updatedAt   DateTime  @updatedAt @map("updatedAt")
+  name        String    @unique
+  slug        String    @unique
+  description String
+  logo        String
+  link        String
+  products    Product[]
+}
+
+model Order {
+  id        Int             @id @default(autoincrement())
+  createdAt DateTime        @default(now()) @map("createdAt")
+  updatedAt DateTime        @updatedAt @map("updatedAt")
+  status    EnumOrderStatus @default(PENDING)
+  userId    Int             @map("user_id")
+  user      User            @relation(fields: [userId], references: [id])
+  items     OrderItem[]
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("createdAt")
+  updatedAt DateTime @updatedAt @map("updatedAt")
+  quantity  Int
+  price     Int
+  orderId   Int?     @map("order_id")
+  productId Int?     @map("product_id")
+  order     Order?   @relation(fields: [orderId], references: [id])
+  Product   Product? @relation(fields: [productId], references: [id])
+
+  @@map("Order_item")
+}
+
+enum EnumOrderStatus {
+  PENDING
+  PAYED
+  SHIPPED
+  DELIVERED
+}
