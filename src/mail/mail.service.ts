@@ -19,7 +19,7 @@ export class MailService {
     this.mailerService
       .sendMail({
         from: "ijuststupidmail@mail.ru",
-        to: "ijuststupidmail@yandex.ru",
+        to: "litry-palitry@mail.ru",
         subject: "Новая заявка",
         html: `
         <h1><i>Имя заказчика: ${dto.name} </i></h1>
@@ -43,7 +43,7 @@ export class MailService {
     this.mailerService
       .sendMail({
         from: "ijuststupidmail@mail.ru",
-        to: "ijuststupidmail@yandex.ru",
+        to: "litry-palitry@mail.ru",
         subject: "Новый отклик на вакансию",
         html: `
         <h1><i>Имя: ${dto.name} </i></h1>
@@ -64,7 +64,7 @@ export class MailService {
     this.mailerService
       .sendMail({
         from: "ijuststupidmail@mail.ru",
-        to: "ijuststupidmail@yandex.ru",
+        to: "litry-palitry@mail.ru",
         subject: "Новая заявка на партнерство",
         html: `
         <h1><i>Название компании: ${dto.companyName} </i></h1>
